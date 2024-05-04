@@ -67,6 +67,7 @@ function ValuesSection() {
                 height={0}
                 src={`/illustrations/${coreValue.img}`}
                 className={'w-20 h-fit'}
+                priority
               />
               <p className="text-center text-sm font-semibold leading-[100%]">{coreValue.value}</p>
             </div>
