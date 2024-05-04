@@ -4,21 +4,73 @@ import Brands from "@/components/brands";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import React from "react";
 import { Bounce, Slide } from "react-awesome-reveal";
 
 export default function Home() {
+  const [isAlreadyHaveAccount, setIsAlreadyHaveAccount] = React.useState(false)
+  const [isAlreadyHaveRegistered, setIsAlreadyHaveRegistered] = React.useState(false)
+  const [isAlreadyHaveLogin, setIsAlreadyHaveLogin] = React.useState(false)
+
+  function LoginSection() {
+    return (
+      <section className="w-full h-fit px-3 pb-10 py-14 bg-white z-50 flex items-center justify-center flex-col text-center gap-1">
+        <h1 className='font-bold text-black text-2xl'>Masuk ke Robo Edu</h1>
+        <p className='text-gray-700 text-sm'>
+          Masuk ke Robo Edu dan belajar banyak hal dengan course yang tersedia!
+        </p>
+        <form action="" className="flex flex-col gap-2 mt-6 w-full px-5">
+          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
+          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
+          <Slide direction="up">
+            <Button type="button" onClick={(e) => setIsAlreadyHaveLogin(true)} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Masuk</Button>
+          </Slide>
+        </form>
+      </section>
+    )
+  }
+
+  function RegisterSection() {
+    return (
+      <section className="w-full h-fit px-3 pb-10 py-14 bg-white z-50 flex items-center justify-center flex-col text-center gap-1">
+        <h1 className='font-bold text-black text-2xl'>Daftar Akun</h1>
+        <p className='text-gray-700 text-sm'>
+          Daftarkan dirimu dan akses seluruh course yang ada!
+        </p>
+        <form action="" className="flex flex-col gap-2 mt-6 w-full px-5">
+          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Namamu" />
+          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Email" />
+          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
+          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
+          <Slide direction="up">
+            <Button className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Daftar</Button>
+          </Slide>
+          <Slide direction="up">
+            <Button onClick={(e) => { setIsAlreadyHaveAccount(true); setIsAlreadyHaveRegistered(true) }} type="button" className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Sudah Punya Akun</Button>
+          </Slide>
+        </form>
+      </section>
+    )
+  }
+
   return (
     <main className="flex min-h-full flex-col w-full">
       <Navbar />
       <HeroSection />
-      <ValuesSection />
+      {isAlreadyHaveLogin && <ValuesSection />}
+      {!isAlreadyHaveRegistered && <RegisterSection />
+      }
+      {isAlreadyHaveAccount && !isAlreadyHaveLogin && <LoginSection />}
       <AboutSection />
       <Brands />
       <Footer />
     </main>
   );
 }
+
+
 
 function HeroSection() {
   return (
