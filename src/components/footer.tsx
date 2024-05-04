@@ -47,6 +47,9 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
+            <div className="w-full flex items-center justify-center mt-8">
+                <p className="text-gray-200 text-xs"> Robo Edu © 2024</p>
+            </div>
         </footer>
     )
 }
