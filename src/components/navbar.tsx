@@ -17,7 +17,7 @@ export default function Navbar() {
     return (
         <section className="w-full bg-primeColor flex flex-col relative">
             <header className="w-full bg-primeColor border-b border-b-gray-200 relative">
-                <nav className="w-full h-fit py-1 px-3 flex justify-between items-center">
+                <nav className="w-full h-fit py-1 px-3 md:px-20 flex justify-between items-center">
                     <Link
                         href={'/'}
                         className={'w-fit'}
@@ -28,7 +28,7 @@ export default function Navbar() {
                             width={0}
                             height={0}
                             src={'/logos/logo-robo-edu.png'}
-                            className={'w-16 h-fit'}
+                            className={'w-16 md:w-24 h-fit'}
                         />
                     </Link>
 
