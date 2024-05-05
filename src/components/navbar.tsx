@@ -9,9 +9,11 @@ import { IoMdContact, IoMdLogOut } from "react-icons/io";
 import { IoInformationCircle, IoLaptopSharp } from "react-icons/io5";
 import { MdOutlineClose } from "react-icons/md";
 import { PiGearFill } from "react-icons/pi";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
     const [showMenu, setShowMenu] = React.useState(false)
+    const [showContactUs, setShowContactUs] = React.useState(false)
     return (
         <section className="w-full bg-primeColor flex flex-col relative">
             <header className="w-full bg-primeColor border-b border-b-gray-200 relative">
@@ -47,10 +49,24 @@ export default function Navbar() {
                         </li>
                         <li><Link href='/courses' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Courses</Link></li>
                         <li><Link href='/about-us' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoInformationCircle />About Us</Link></li>
-                        <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdContact />Contact Us</Link></li>
+                        <li><div onClick={(e) => { setShowContactUs(!showContactUs); setShowMenu(!showMenu) }} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdContact />Contact Us</div></li>
                         <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><PiGearFill />Edit Profile</Link></li>
                         <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdLogOut />Logout</Link></li>
                     </ul>
+                </section>
+            }
+            {
+                showContactUs && <section className="w-full bg-primeColor flex flex-col gap-5 items-start justify-center text-secondColor z-50 absolute top-20 right-0 border border-gray-200 rounded-lg px-5 py-4">
+                    <div className="flex justify-between items-center w-full">
+                        <h2 className="text-secondColor font-bold text-base">Contact Us</h2>
+                        <MdOutlineClose onClick={(e) => setShowContactUs(!showContactUs)} className="text-2xl text-secondColor hover:cursor-pointer" />
+                    </div>
+
+                    <div className="flex flex-col gap-2 w-full items-center justify-center mb-7 text-center">
+                        <h2 className="text-secondColor font-bold text-lg leading-[100%]">Interested To <br />Cooperate With Us?</h2>
+                        <Button className="w-fit ml-3 bg-secondColor hover:bg-secondColor text-white">Send Us Message</Button>
+                    </div>
+
                 </section>
             }
         </section>
