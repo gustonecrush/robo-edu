@@ -69,6 +69,45 @@ function CourseSection({ course }: { course: Course }) {
             </div>
         </div>
 
+        <div className="flex w-full flex-col gap-3 px-5 py-4 border-2 rounded-lg border-gray-200">
+            <div className="flex justify-between items-center w-full">
+                <p className="font-bold text-sm">{course?.judul_course}</p>
+                <div className="flex gap-1">
+                    <Image 
+                        src='/icons/durasi.png'
+                        width={0}
+                        height={0}
+                        className='w-4'
+                        alt="Ikon Durasi"
+                    />
+                    <p className="text-xs">18:15 Menit</p>
+                </div>
+            </div>
+            <div className="flex justify-between bg-gray-300 rounded-full items-center w-full px-4 py-2">
+            <div className="flex gap-1">
+                    <Image 
+                        src='/icons/video.png'
+                        width={0}
+                        height={0}
+                        className='w-4'
+                        alt="Ikon Durasi"
+                    />
+                    <p className="text-xs">{course.video_course.length} Video Pembelajaran</p>
+                </div>
+                <div className="flex gap-1">
+                    <Image 
+                        src='/icons/materi.png'
+                        width={0}
+                        height={0}
+                        className='w-4'
+                        alt="Ikon Durasi"
+                    />
+                    <p className="text-xs">{course.soal_course.length} Soal</p>
+                </div>
+            </div>
+
+        </div>
+
         <div className="w-full flex flex-col gap-0">
             {
                 course.video_course?.map((video, index) => (
