@@ -13,6 +13,7 @@ import { MdFacebook } from "react-icons/md";
 import { ImInstagram } from "react-icons/im";
 import { FiBookmark } from "react-icons/fi";
 import Marquee from "react-fast-marquee";
+import Link from "next/link";
 
 export default function Courses() {
     return (
@@ -51,9 +52,9 @@ function HeroSection() {
 
 function CourseSection() {
     const coreValues = [
-        { img: 'illustration-1.png', value: 'Belajar menulis', },
-        { img: 'illustration-2.png', value: 'Belajar membaca', },
-        { img: 'illustration-3.png', value: 'Belajar menghitung', },
+        { img: 'illustration-1.png', link: '/courses/belajar-membaca', value: 'Belajar menulis', },
+        { img: 'illustration-2.png', link: '/courses/belajar-menulis', value: 'Belajar membaca', },
+        { img: 'illustration-3.png', link: '/courses/belajar-menghitung', value: 'Belajar menghitung', },
     ]
     return (
         <section className="w-full h-fit px-3 py-16 bg-white flex items-center justify-center flex-col text-center gap-5">
@@ -74,7 +75,7 @@ function CourseSection() {
                                 priority
                             />
                             <p className="text-center text-sm font-semibold leading-[100%]">{coreValue.value}</p>
-                            <Button className="w-fit rounded-full bg-secondColor hover:bg-secondColor text-white">Mulai</Button>
+                            <Link href={coreValue.link} className="w-fit rounded-full bg-secondColor hover:bg-secondColor text-white px-5 py-1">Mulai</Link>
                         </div>
                     </Slide>
 
