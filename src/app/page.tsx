@@ -7,7 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import React from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Bounce, Slide } from "react-awesome-reveal";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import Toast from "@/components/toast/Toast";
 
 export default function Home() {
   const [isAlreadyHaveAccount, setIsAlreadyHaveAccount] = React.useState(false)
@@ -15,17 +27,42 @@ export default function Home() {
   const [isAlreadyHaveLogin, setIsAlreadyHaveLogin] = React.useState(false)
 
   function LoginSection() {
+    const router = useRouter()
+
+    const [username, setUsername] = React.useState('')
+    const [password, setPassword] = React.useState('')
+
+    const handleLoginUser = async (e: any) => {
+      e.preventDefault()
+
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/api/v1/login';
+      const loginData = new FormData()
+      loginData.append('username', username)
+      loginData.append('password', password)
+
+      try {
+        const response = await axios.post(baseUrl, loginData)
+        Toast.fire({
+          icon: 'success',
+          title: `Berhasil login, silahkan mengupload video dan module sebagai contributor!`,
+        });
+        setIsAlreadyHaveLogin(true)
+        console.log({ response })
+      } catch (error) {
+        console.error({ error })
+      }
+    }
     return (
       <section className="w-full h-fit px-3 md:px-64 pb-10 py-14 bg-white z-50 flex items-center justify-center flex-col text-center gap-1">
         <h1 className='font-bold text-black text-2xl md:text-4xl'>Masuk ke Robo Edu</h1>
         <p className='text-gray-700 text-sm md:text-xl'>
           Masuk ke Robo Edu dan belajar banyak hal dengan course yang tersedia!
         </p>
-        <form action="" className="flex flex-col gap-2 mt-6 w-full px-5">
-          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
-          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
+        <form onSubmit={(e) => handleLoginUser(e)} className="flex flex-col gap-2 mt-6 w-full px-5">
+          <Input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
+          <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
           <Slide direction="up">
-            <Button type="button" onClick={(e) => setIsAlreadyHaveLogin(true)} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Masuk</Button>
+            <Button type="submit" className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Masuk</Button>
           </Slide>
         </form>
       </section>
@@ -33,22 +70,67 @@ export default function Home() {
   }
 
   function RegisterSection() {
+    const router = useRouter()
+
+    const [name, setName] = React.useState('')
+    const [username, setUsername] = React.useState('')
+    const [email, setEmail] = React.useState('')
+    const [password, setPassword] = React.useState('')
+    const [role, setRole] = React.useState('')
+
+    const handleRegisterUser = async (e: any) => {
+      e.preventDefault()
+
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/api/v1/register';
+      const registerData = new FormData()
+      registerData.append('name', name)
+      registerData.append('username', username)
+      registerData.append('email', email)
+      registerData.append('password', password)
+      registerData.append('role', role)
+
+      try {
+        const response = await axios.post(baseUrl, registerData)
+        Toast.fire({
+          icon: 'success',
+          title: `Berhasil mendaftarkankan akun anda sebagai ${role}, silahkan login!`,
+        });
+        setIsAlreadyHaveAccount(true)
+        setIsAlreadyHaveRegistered(true)
+        console.log({ response })
+      } catch (error) {
+        console.error({ error })
+      }
+    }
+
     return (
       <section className="w-full h-fit px-3 md:px-64 pb-10 py-14 bg-white z-50 flex items-center justify-center flex-col text-center gap-1">
         <h1 className='font-bold text-black text-2xl md:text-4xl'>Daftar Akun</h1>
         <p className='text-gray-700 text-sm md:text-xl'>
           Daftarkan dirimu dan akses seluruh course yang ada!
         </p>
-        <form action="" className="flex flex-col gap-2 mt-6 w-full px-5">
-          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Namamu" />
-          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Email" />
-          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
-          <Input className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
+        <form onSubmit={(e) => handleRegisterUser(e)} className="flex flex-col gap-2 mt-6 w-full px-5">
+          <Input value={name} onChange={(e) => setName(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Namamu" />
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Email" />
+          <Input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
+          <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
+          <Select value={role} onValueChange={(value) => setRole(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Daftar sebagai" />
+            </SelectTrigger>
+            <SelectContent side="top">
+              <SelectGroup>
+                <SelectLabel>Sebagai</SelectLabel>
+                <SelectItem value="contributor">Contributor</SelectItem>
+                <SelectItem value="siswa">Siswa</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <Slide direction="up">
             <Button className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Daftar</Button>
           </Slide>
           <Slide direction="up">
-            <Button onClick={(e) => { setIsAlreadyHaveAccount(true); setIsAlreadyHaveRegistered(true) }} type="button" className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Sudah Punya Akun</Button>
+            <Button type="submit" className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Sudah Punya Akun</Button>
           </Slide>
         </form>
       </section>
