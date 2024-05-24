@@ -20,6 +20,7 @@ import { Bounce, Slide } from "react-awesome-reveal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Toast from "@/components/toast/Toast";
+import Cookies from 'js-cookie'
 
 export default function Home() {
   const [isAlreadyHaveAccount, setIsAlreadyHaveAccount] = React.useState(false)
@@ -46,7 +47,10 @@ export default function Home() {
           icon: 'success',
           title: `Berhasil login, silahkan mengupload video dan module sebagai contributor!`,
         });
-        setIsAlreadyHaveLogin(true)
+        Cookies.set('Token', response.data.authorization.token)
+        Cookies.set('Role', response.data.authorization.role)
+        Cookies.set('IDUser', response.data.authorization.id)
+        router.push(`/home`)
         console.log({ response })
       } catch (error) {
         console.error({ error })
@@ -60,9 +64,12 @@ export default function Home() {
         </p>
         <form onSubmit={(e) => handleLoginUser(e)} className="flex flex-col gap-2 mt-6 w-full px-5">
           <Input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
-          <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
+          <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" type="password" />
           <Slide direction="up">
             <Button type="submit" className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Masuk</Button>
+          </Slide>
+          <Slide direction="up">
+            <Button type="button" onClick={(e) => setIsAlreadyHaveAccount(false)} className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Belum Punya Akun</Button>
           </Slide>
         </form>
       </section>
@@ -97,6 +104,7 @@ export default function Home() {
         });
         setIsAlreadyHaveAccount(true)
         setIsAlreadyHaveRegistered(true)
+        Cookies.set('RoleUser', role)
         console.log({ response })
       } catch (error) {
         console.error({ error })
@@ -113,7 +121,7 @@ export default function Home() {
           <Input value={name} onChange={(e) => setName(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Namamu" />
           <Input value={email} onChange={(e) => setEmail(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Email" />
           <Input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
-          <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" />
+          <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Password" type="password" />
           <Select value={role} onValueChange={(value) => setRole(value)}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Daftar sebagai" />
@@ -130,7 +138,7 @@ export default function Home() {
             <Button className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Daftar</Button>
           </Slide>
           <Slide direction="up">
-            <Button type="submit" className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Sudah Punya Akun</Button>
+            <Button type="button" onClick={(e) => setIsAlreadyHaveAccount(true)} className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Sudah Punya Akun</Button>
           </Slide>
         </form>
       </section>
@@ -141,8 +149,7 @@ export default function Home() {
     <main className="flex min-h-full flex-col w-full">
       <Navbar />
       <HeroSection />
-      {isAlreadyHaveLogin && <ValuesSection />}
-      {!isAlreadyHaveRegistered && <RegisterSection />
+      {!isAlreadyHaveAccount && <RegisterSection />
       }
       {isAlreadyHaveAccount && !isAlreadyHaveLogin && <LoginSection />}
       <AboutSection />

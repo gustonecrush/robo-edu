@@ -10,10 +10,47 @@ import { IoInformationCircle, IoLaptopSharp } from "react-icons/io5";
 import { MdOutlineClose } from "react-icons/md";
 import { PiGearFill } from "react-icons/pi";
 import { Button } from "./ui/button";
+import axios from "axios";
+import Toast from "./toast/Toast";
+import Cookies from 'js-cookie'
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
     const [showMenu, setShowMenu] = React.useState(false)
     const [showContactUs, setShowContactUs] = React.useState(false)
+    const tokenUser = Cookies.get('Token')
+    const router = useRouter()
+    const roleUser = Cookies.get('Role')
+
+    const handleLogoutUser = async (e: any) => {
+        e.preventDefault()
+
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/api/v1/logout';
+
+        try {
+            const response = await axios.post(baseUrl, {}, {
+                headers: {
+                    Authorization: `Bearer ${tokenUser}`
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: `Berhasil logout, terima kasih telah berkontribusi bersama Robo Edu!`,
+            });
+            Cookies.remove('IsAlreadyHaveLogin')
+            Cookies.remove('Token')
+            Cookies.remove('IsAlreadyHaveAccount')
+            Cookies.remove('IsAlreadyHaveRegistered')
+            Cookies.remove('RoleUser')
+            Cookies.remove('Role')
+            Cookies.remove('IDUser')
+
+            router.push(`/`)
+            console.log({ response })
+        } catch (error) {
+            console.error({ error })
+        }
+    }
     return (
         <section className="w-full bg-primeColor flex flex-col relative">
             <header className="w-full bg-primeColor border-b border-b-gray-200 relative">
@@ -45,13 +82,16 @@ export default function Navbar() {
                 <section className="w-fit bg-primeColor flex items-center justify-center text-secondColor z-50 absolute top-20 right-0 border border-gray-200 rounded-lg">
                     <ul>
                         <li>
-                            <Link href='/' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><GoHomeFill />Home</Link>
+                            <Link href='/home' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><GoHomeFill />Home</Link>
                         </li>
-                        <li><Link href='/courses' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Courses</Link></li>
+                        {
+                            roleUser == 'contributor' ? <li><Link href='/dashboard/contributor' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Contributor</Link></li> : <li><Link href='/courses' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Courses</Link></li>
+                        }
+
                         <li><Link href='/about-us' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoInformationCircle />About Us</Link></li>
                         <li><div onClick={(e) => { setShowContactUs(!showContactUs); setShowMenu(!showMenu) }} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdContact />Contact Us</div></li>
                         <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><PiGearFill />Edit Profile</Link></li>
-                        <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdLogOut />Logout</Link></li>
+                        <li><div onClick={(e) => handleLogoutUser(e)} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdLogOut />Logout</div></li>
                     </ul>
                 </section>
             }

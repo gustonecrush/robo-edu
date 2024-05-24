@@ -14,6 +14,16 @@ import { ImInstagram } from "react-icons/im";
 import { FiBookmark } from "react-icons/fi";
 import Marquee from "react-fast-marquee";
 import Link from "next/link";
+import Cookies from 'js-cookie'
+import { HashLoader } from 'react-spinners';
+import { Module } from "@/types/robo-edu";
+import axios from "axios";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export default function Courses() {
     return (
@@ -87,6 +97,76 @@ function CourseSection() {
                 }
             </div>
 
+        </section>
+    )
+}
+
+function ModuleSection() {
+    const [modul, setModul] = React.useState('')
+    const [category, setCategory] = React.useState('')
+    const [contributor, setContributor] = React.useState('')
+
+    const idUser = Cookies.get('IDUser')
+    const [idModule, setIdModule] = React.useState('')
+    const [isLoading, setIsLoading] = React.useState(false)
+    const [isLoadingVideo, setIsLoadingVideo] = React.useState(false)
+    const [isUploading, setIsUploading] = React.useState(false)
+
+    const [modules, setModules] = React.useState<Module[]>([])
+    const handleFetchModlues = async () => {
+        setIsLoading(true)
+        const id = Cookies.get('IDUser')
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + `/api/v1/get-module`;
+        try {
+            const response = await axios.get(baseUrl)
+            setModules(response.data.data)
+            console.log({ response })
+            setIsLoading(false)
+        } catch (error) {
+            console.error({ error })
+            setIsLoading(false)
+        }
+    }
+    const [showFormModule, setShowFormModule] = React.useState(false)
+    const [showFormVideo, setShowFormVideo] = React.useState(false)
+
+    React.useEffect(() => {
+        handleFetchModlues()
+    }, [])
+
+    return (
+        <section className="w-full h-fit px-3 md:px-64 pb-10 py-14 bg-white z-50 flex items-center justify-start flex-col text-left gap-1">
+            <div className="w-full flex gap-2 justify-between items-center px-5">
+                <div className="flex flex-col gap-0 text-left w-full ">
+                    <h1 className='font-bold text-black text-left text-2xl md:text-4xl'>Modul Pembalajaran</h1>
+                    <p className='text-gray-700 text-left text-sm md:text-xl'>
+                        Tambahkan modulmu sendiri!
+                    </p>
+                </div>
+            </div>
+            {isLoading ? <div className="px-5 flex w-full items-center justify-center mt-10">
+                <div className="w-full flex flex-col gap-2 py-10 items-center justify-center">
+                    <HashLoader color="#FF8E06" size={32} />
+                </div>
+            </div> : modules.length > 0 && <Accordion type="single" collapsible className="w-full px-5">
+                {
+                    modules.map((module, index) => (
+                        <AccordionItem key={index} value={module.id}>
+                            <AccordionTrigger >
+                                <div className="flex flex-col gap-0 items-start text-left w-full justify-start">
+                                    <p className='font-medium '>
+                                        {module.name}
+                                    </p>
+                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                        {module.category.name}
+                                    </p>
+                                </div>
+                            </AccordionTrigger>
+
+                        </AccordionItem>
+                    ))
+                }
+            </Accordion>}
         </section>
     )
 }
