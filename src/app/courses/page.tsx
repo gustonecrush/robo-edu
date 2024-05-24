@@ -23,7 +23,7 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion2"
 
 export default function Courses() {
     return (
@@ -31,6 +31,7 @@ export default function Courses() {
             <Navbar />
             <HeroSection />
             <CourseSection />
+            <ModuleSection />
             <Brands />
             <Footer />
         </main>
@@ -70,7 +71,7 @@ function CourseSection() {
         <section className="w-full h-fit px-3 py-16 bg-white flex items-center justify-center flex-col text-center gap-5">
             <div className="flex flex-col gap-5">
                 <h1 className='font-bold text-black text-2xl'>Robo Edu E-Learning</h1>
-                <h2 className='text-secondColor -mt-3'>Platform Edukasi Anak Tunagrahita</h2>
+                <h2 className='text-secondColor -mt-5 text-sm'>Platform Edukasi Anak Tunagrahita</h2>
             </div>
 
             <div className="flex flex-col md:flex-row gap-5">
@@ -89,7 +90,7 @@ function CourseSection() {
                                     priority
                                 />
                                 <p className="text-center text-sm md:text-base font-semibold leading-[100%]">{coreValue.value}</p>
-                                <Link href={coreValue.link} className="w-fit rounded-full bg-secondColor hover:bg-secondColor text-white px-5 py-1">Mulai</Link>
+                                {/* <Link href={coreValue.link} className="w-fit rounded-full bg-secondColor hover:bg-secondColor text-white px-5 py-1">Mulai</Link> */}
                             </div>
                         </Slide>
 
@@ -135,11 +136,11 @@ function ModuleSection() {
     }, [])
 
     return (
-        <section className="w-full h-fit px-3 md:px-64 pb-10 py-14 bg-white z-50 flex items-center justify-start flex-col text-left gap-1">
+        <section className="w-full h-fit px-3 md:px-64 pb-10 pt-4 bg-white z-50 flex items-center justify-start flex-col text-left gap-1">
             <div className="w-full flex gap-2 justify-between items-center px-5">
-                <div className="flex flex-col gap-0 text-left w-full ">
-                    <h1 className='font-bold text-black text-left text-2xl md:text-4xl'>Modul Pembalajaran</h1>
-                    <p className='text-gray-700 text-left text-sm md:text-xl'>
+                <div className="flex flex-col gap-0 text-center w-full ">
+                    <h1 className='font-bold text-black text-center text-2xl md:text-4xl'>Modul Pembalajaran</h1>
+                    <p className='text-secondColor text-center text-sm md:text-xl'>
                         Tambahkan modulmu sendiri!
                     </p>
                 </div>
@@ -153,14 +154,14 @@ function ModuleSection() {
                     modules.map((module, index) => (
                         <AccordionItem key={index} value={module.id}>
                             <AccordionTrigger >
-                                <div className="flex flex-col gap-0 items-start text-left w-full justify-start">
+                                <Link href={`/courses/${module.id}`} className="flex flex-col gap-0 items-start text-left w-full justify-start">
                                     <p className='font-medium '>
                                         {module.name}
                                     </p>
                                     <p className="text-sm font-normal text-gray-700 !no-underline">
                                         {module.category.name}
                                     </p>
-                                </div>
+                                </Link>
                             </AccordionTrigger>
 
                         </AccordionItem>
