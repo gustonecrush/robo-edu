@@ -85,7 +85,7 @@ export default function Navbar() {
                             <Link href='/home' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><GoHomeFill />Home</Link>
                         </li>
                         {
-                            roleUser == 'contributor' ? <li><Link href='/dashboard/contributor' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Contributor</Link></li> : <li><Link href='/courses' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Courses</Link></li>
+                            roleUser == 'contributor' && tokenUser && <li><Link href='/dashboard/contributor' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Contributor</Link></li>}{roleUser != 'contributor' && tokenUser && <li><Link href='/courses' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Courses</Link></li>
                         }
 
                         <li><Link href='/about-us' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoInformationCircle />About Us</Link></li>

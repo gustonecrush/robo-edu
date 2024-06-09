@@ -31,7 +31,6 @@ export default function Courses() {
             <Navbar />
             <HeroSection />
             <CourseSection />
-            <ModuleSection />
             <Brands />
             <Footer />
         </main>
@@ -62,11 +61,58 @@ function HeroSection() {
 }
 
 function CourseSection() {
-    const coreValues = [
-        { img: 'illustration-1.png', link: '/courses/belajar-membaca', value: 'Belajar menulis', },
-        { img: 'illustration-2.png', link: '/courses/belajar-menulis', value: 'Belajar membaca', },
-        { img: 'illustration-3.png', link: '/courses/belajar-menghitung', value: 'Belajar menghitung', },
-    ]
+    type Category = {
+        id: string;
+        name: string;
+    }
+
+    const [categories, setCategories] = React.useState<Category[]>([])
+    const [categoryIdSelected, setCategoryIdSelected] = React.useState<string>('')
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/get-category`)
+            console.log('CATEGORIES : ', response)
+
+            setCategories(response.data.data)
+        } catch (error) {
+            console.error('ERROR CATEGORIES : ', error)
+        }
+    }
+
+    const [modul, setModul] = React.useState('')
+    const [category, setCategory] = React.useState('')
+    const [contributor, setContributor] = React.useState('')
+
+    const idUser = Cookies.get('IDUser')
+    const [idModule, setIdModule] = React.useState('')
+    const [isLoading, setIsLoading] = React.useState(false)
+    const [isLoadingVideo, setIsLoadingVideo] = React.useState(false)
+    const [isUploading, setIsUploading] = React.useState(false)
+
+    const [modules, setModules] = React.useState<Module[]>([])
+    const handleFetchModlues = async (idCategory: string) => {
+        setIsLoading(true)
+        const id = Cookies.get('IDUser')
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + `/api/v1/get-module?category_id=` + idCategory;
+        try {
+            const response = await axios.get(baseUrl)
+            setModules(response.data.data)
+            console.log({ response })
+            setIsLoading(false)
+        } catch (error) {
+            console.error({ error })
+            setIsLoading(false)
+        }
+    }
+    const [showFormModule, setShowFormModule] = React.useState(false)
+    const [showFormVideo, setShowFormVideo] = React.useState(false)
+
+
+    React.useEffect(() => {
+        fetchCategories()
+    }, [])
+
     return (
         <section className="w-full h-fit px-3 py-16 bg-white flex items-center justify-center flex-col text-center gap-5">
             <div className="flex flex-col gap-5">
@@ -76,33 +122,65 @@ function CourseSection() {
 
             <div className="flex flex-col md:flex-row gap-5">
                 {
-                    coreValues.map((coreValue, index) => (
-                        <Slide direction="up" key={index} duration={500 * index} delay={200 * index}>
-                            <div className="flex items-center justify-center flex-col w-[230px] md:w-[280px] rounded-lg shadow-md h-fit px-3 py-6 gap-4">
-                                <Image
-                                    key={index}
-                                    alt={coreValue.value}
-                                    title={coreValue.value}
-                                    width={0}
-                                    height={0}
-                                    src={`/illustrations/${coreValue.img}`}
-                                    className={'w-28 md:w-36 h-fit'}
-                                    priority
-                                />
-                                <p className="text-center text-sm md:text-base font-semibold leading-[100%]">{coreValue.value}</p>
-                                {/* <Link href={coreValue.link} className="w-fit rounded-full bg-secondColor hover:bg-secondColor text-white px-5 py-1">Mulai</Link> */}
-                            </div>
-                        </Slide>
+                    categories.map((category, index) => (
+                        <div key={index} className="flex items-center justify-center flex-col w-[230px] md:w-[280px] rounded-lg shadow-md h-fit px-3 py-6 gap-4" onClick={(e) => handleFetchModlues(category.id)}>
+                            <Image
+                                key={index}
+                                alt={category.name}
+                                title={category.name}
+                                width={0}
+                                height={0}
+                                src={`/illustrations/${category.name == 'Menghitung' ? 'illustration-2.png' : category.name == 'Membaca' ? 'illustration-1.png' : 'illustration-3.png'}`}
+                                className={'w-28 md:w-36 h-fit'}
+                                priority
+                            />
+                            <p className="text-center text-sm md:text-base font-semibold leading-[100%]">{category.name}</p>
+                        </div>
 
                     ))
                 }
             </div>
 
+            <section className="w-full h-fit px-3 md:px-64 pb-10 pt-4 bg-white z-50 flex items-center justify-start flex-col text-left gap-1">
+                <div className="w-full flex gap-2 justify-between items-center px-5">
+                    <div className="flex flex-col gap-0 text-center w-full ">
+                        <h1 className='font-bold text-black text-center text-2xl md:text-4xl'>Modul Pembalajaran</h1>
+                        <p className='text-secondColor text-center text-sm md:text-xl'>
+                            Ayo tumbuh dan belajar bersama Robo Edu!
+                        </p>
+                    </div>
+                </div>
+                {isLoading ? <div className="px-5 flex w-full items-center justify-center mt-10">
+                    <div className="w-full flex flex-col gap-2 py-10 items-center justify-center">
+                        <HashLoader color="#FF8E06" size={32} />
+                    </div>
+                </div> : modules.length > 0 ? <Accordion type="single" collapsible className="w-full px-5">
+                    {
+                        modules.map((module, index) => (
+                            <AccordionItem key={index} value={module.id}>
+                                <AccordionTrigger >
+                                    <Link href={`/courses/${module.id}`} className="flex flex-col gap-0 items-start text-left w-full justify-start">
+                                        <p className='font-medium '>
+                                            {module.name}
+                                        </p>
+                                        <p className="text-sm font-normal text-gray-700 !no-underline">
+                                            {module.category.name}
+                                        </p>
+                                    </Link>
+                                </AccordionTrigger>
+
+                            </AccordionItem>
+                        ))
+                    }
+                </Accordion> : <div className="w-full flex items-center justify-center flex-col gap-1 mt-10">
+                    <Image src={'/maskot/maskot.png'} alt={'maskot Robo Edu'} width={0} height={0} className="w-56" /><h1 className='font-normal text-primeColor text-center text-xl'>Tidak ada Modul Yang Tersedia pada Kategori ini</h1></div>}
+            </section>
+
         </section>
     )
 }
 
-function ModuleSection() {
+function ModuleSection({ id }: { id: string }) {
     const [modul, setModul] = React.useState('')
     const [category, setCategory] = React.useState('')
     const [contributor, setContributor] = React.useState('')
@@ -117,7 +195,7 @@ function ModuleSection() {
     const handleFetchModlues = async () => {
         setIsLoading(true)
         const id = Cookies.get('IDUser')
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + `/api/v1/get-module`;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + `/api/v1/get-module?category_id=` + id;
         try {
             const response = await axios.get(baseUrl)
             setModules(response.data.data)
@@ -149,7 +227,7 @@ function ModuleSection() {
                 <div className="w-full flex flex-col gap-2 py-10 items-center justify-center">
                     <HashLoader color="#FF8E06" size={32} />
                 </div>
-            </div> : modules.length > 0 && <Accordion type="single" collapsible className="w-full px-5">
+            </div> : modules.length > 0 ? <Accordion type="single" collapsible className="w-full px-5">
                 {
                     modules.map((module, index) => (
                         <AccordionItem key={index} value={module.id}>
@@ -167,7 +245,7 @@ function ModuleSection() {
                         </AccordionItem>
                     ))
                 }
-            </Accordion>}
+            </Accordion> : <h1 className='font-bold text-black text-center text-2xl md:text-4xl'>Tidak ada Modul Yang Tersedia pada Kategori ini</h1>}
         </section>
     )
 }
