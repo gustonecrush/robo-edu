@@ -35,7 +35,7 @@ export default function Navbar() {
             })
             Toast.fire({
                 icon: 'success',
-                title: `Berhasil logout, terima kasih telah berkontribusi bersama Robo Edu!`,
+                title: `Berhasil logout, terima kasih telah menggunakan Robo Edu!`,
             });
             Cookies.remove('IsAlreadyHaveLogin')
             Cookies.remove('Token')
@@ -90,8 +90,11 @@ export default function Navbar() {
 
                         <li><Link href='/about-us' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoInformationCircle />About Us</Link></li>
                         <li><div onClick={(e) => { setShowContactUs(!showContactUs); setShowMenu(!showMenu) }} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdContact />Contact Us</div></li>
-                        <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><PiGearFill />Edit Profile</Link></li>
-                        <li><div onClick={(e) => handleLogoutUser(e)} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdLogOut />Logout</div></li>
+                        {
+                            tokenUser && <>    <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><PiGearFill />Edit Profile</Link></li>
+                                <li><div onClick={(e) => handleLogoutUser(e)} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdLogOut />Logout</div></li></>
+                        }
+
                     </ul>
                 </section>
             }

@@ -45,7 +45,7 @@ export default function Home() {
         const response = await axios.post(baseUrl, loginData)
         Toast.fire({
           icon: 'success',
-          title: `Berhasil login, silahkan mengupload video dan module sebagai contributor!`,
+          title: `Berhasil login, silahkan menggunakan Robo Edu!`,
         });
         Cookies.set('Token', response.data.authorization.token)
         Cookies.set('Role', response.data.authorization.role)
