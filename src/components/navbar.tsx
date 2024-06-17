@@ -13,14 +13,55 @@ import { Button } from "./ui/button";
 import axios from "axios";
 import Toast from "./toast/Toast";
 import Cookies from 'js-cookie'
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { HashLoader } from "react-spinners";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
 export default function Navbar() {
     const [showMenu, setShowMenu] = React.useState(false)
     const [showContactUs, setShowContactUs] = React.useState(false)
     const tokenUser = Cookies.get('Token')
     const router = useRouter()
+    const currentPath = usePathname()
     const roleUser = Cookies.get('Role')
+    const [isUploading, setIsUploading] = React.useState(false)
+
+    type UserDetail = {
+        id: number,
+        name: string,
+        role: string,
+        email: string,
+        username: string
+    }
+
+    const [userDetail, setUserDetail] = React.useState<UserDetail>()
+    const handleFetchUserDetail = async () => {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/api/v1/user';
+        try {
+            const response = await axios.get(baseUrl, {
+                headers: {
+                    Authorization: `Bearer ${tokenUser}`
+                }
+            })
+            setUserDetail(response.data.user)
+            console.log({ response })
+        } catch (error) {
+            console.error({ error })
+        }
+    }
 
     const handleLogoutUser = async (e: any) => {
         e.preventDefault()
@@ -51,6 +92,63 @@ export default function Navbar() {
             console.error({ error })
         }
     }
+
+    const [name, setName] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [username, setUsername] = React.useState('')
+    const [isUpdatePassword, setIsUpdatePassword] = React.useState(false)
+    const [isOpenFormUpdate, setIsOpenFormUpdate] = React.useState(false)
+
+    const handleUpdateProfile = async (e: any) => {
+        e.preventDefault()
+
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/api/v1/update';
+        const modulData = new FormData()
+
+        if (email !== '') {
+            modulData.append('email', email)
+        }
+        if (username !== '') {
+            modulData.append('username', username)
+        }
+        if (name !== '') {
+            modulData.append('name', name)
+        }
+        if (password !== '') {
+            modulData.append('password', password)
+        }
+
+        try {
+            const response = await axios.post(baseUrl, modulData, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('Token')}`
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: `Berhasil mengupdate profile sobat Robo Edu!`,
+            });
+            console.log({ response })
+            setName('')
+            setEmail('')
+            setUsername('')
+            setPassword('')
+            setIsOpenFormUpdate(!isOpenFormUpdate)
+            handleFetchUserDetail()
+        } catch (error) {
+            console.error({ error })
+            Toast.fire({
+                icon: 'error',
+                title: `Gagal mengupdate profile, terdapat gangguan server!`,
+            });
+        }
+    }
+
+    React.useEffect(() => {
+        handleFetchUserDetail()
+    }, [])
+
     return (
         <section className="w-full bg-primeColor flex flex-col relative">
             <header className="w-full bg-primeColor border-b border-b-gray-200 relative">
@@ -91,7 +189,70 @@ export default function Navbar() {
                         <li><Link href='/about-us' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoInformationCircle />About Us</Link></li>
                         <li><div onClick={(e) => { setShowContactUs(!showContactUs); setShowMenu(!showMenu) }} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdContact />Contact Us</div></li>
                         {
-                            tokenUser && <>    <li><Link href='#' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><PiGearFill />Edit Profile</Link></li>
+                            tokenUser && <>    <li>  <AlertDialog open={isOpenFormUpdate}>
+                                <AlertDialogTrigger>
+                                    <div onClick={(e) => setIsOpenFormUpdate(!isOpenFormUpdate)} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><PiGearFill />Edit Profile</div>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className='w-5/6 rounded-xl py-10'>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Update Profile Robo Edu-mu!</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Ubah detail user profile Robo Edu-mu dengan mudah sekarang juga!
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+
+                                    <form className="flex flex-col gap-2 mt-0 w-full">
+
+                                        {
+                                            isUploading ? <div className="px-5 flex w-full items-center justify-center mt-10">
+                                                <div className="w-full flex flex-col gap-2 py-5 -mt-10 items-center justify-center">
+                                                    <HashLoader color="#FF8E06" size={32} />
+                                                </div>
+                                            </div> : <>
+                                                <div className="flex flex-col w-full">
+                                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                        Nama
+                                                    </p>
+                                                    <Input value={name} onChange={(e) => setName(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder={userDetail?.name} />
+                                                </div>
+                                                <div className="flex flex-col w-full">
+                                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                        Email
+                                                    </p>
+                                                    <Input value={email} onChange={(e) => setEmail(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder={userDetail?.email} />
+                                                </div>
+                                                <div className="flex flex-col w-full">
+                                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                        Username
+                                                    </p>
+                                                    <Input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder={userDetail?.username} />
+                                                </div>
+                                                <div className="flex flex-col w-full">
+                                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                        Password
+                                                    </p>
+                                                    <div className="flex w-full gap-1">
+                                                        <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" type="password" placeholder="XXXXXXXXX" readOnly={!isUpdatePassword} disabled={!isUpdatePassword} />
+                                                        {
+                                                            !isUpdatePassword && <Button onClick={(e) => setIsUpdatePassword(!isUpdatePassword)} className="w-fit bg-primeColor hover:bg-primeColor active:ring-secondColor text-white">Update Password</Button>
+                                                        }
+
+                                                    </div>
+
+
+                                                </div>
+                                            </>
+                                        }
+
+
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel onClick={(e) => setIsOpenFormUpdate(!isOpenFormUpdate)}>Batal</AlertDialogCancel>
+
+                                            <Button onClick={(e) => handleUpdateProfile(e)} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Update</Button>
+                                        </AlertDialogFooter>
+                                    </form>
+                                </AlertDialogContent>
+                            </AlertDialog></li>
                                 <li><div onClick={(e) => handleLogoutUser(e)} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdLogOut />Logout</div></li></>
                         }
 
