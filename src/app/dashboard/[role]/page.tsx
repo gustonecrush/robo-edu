@@ -35,7 +35,7 @@ import {
 import { LucideUploadCloud, X } from 'lucide-react'
 import { IoPlay } from 'react-icons/io5'
 import { BsTrash2Fill } from 'react-icons/bs'
-import { MdEdit } from 'react-icons/md'
+import { MdEdit, MdEditNote, MdOutlineDelete } from 'react-icons/md'
 import { Textarea } from '@/components/ui/textarea'
 import Image from 'next/image'
 
@@ -263,6 +263,74 @@ function ModuleSection() {
         }
     }
 
+    const [nameModule, setNameModule] = React.useState('');
+    const [categoryModule, setCategoryModule] = React.useState('');
+    const [isOpenFormUpdate, setIsOpenFormUpdate] = React.useState(false)
+    const [isOpenFormDelete, setIsOpenFormDelete] = React.useState(false)
+    const [idModuleUpdate, setIdModuleUpdate] = React.useState('')
+
+    const handleUpdateModule = async (e: any) => {
+        e.preventDefault()
+
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + `/api/v1/update-module/${idModuleUpdate}`;
+
+        try {
+            const response = await axios.put(baseUrl, ({
+                name: nameModule,
+                category: categoryModule
+            }), {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('Token')}`
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: `Berhasil mengupdate module-mu sobat Robo Edu!`,
+            });
+            console.log({ response })
+            setNameModule('')
+            setIdModuleUpdate('')
+            setIsOpenFormUpdate(!isOpenFormUpdate)
+            handleFetchModlues()
+        } catch (error) {
+            console.error({ error })
+            Toast.fire({
+                icon: 'error',
+                title: `Gagal mengupdate module, terdapat gangguan server!`,
+            });
+        }
+    }
+
+    const handleDeleteModule = async (e: any) => {
+        e.preventDefault()
+
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + `/api/v1/delete-module/${idModuleUpdate}`;
+
+        try {
+            const response = await axios.delete(baseUrl, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('Token')}`
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: `Berhasil menghapus module-mu sobat Robo Edu!`,
+            });
+            console.log({ response })
+            setNameModule('')
+            setIdModuleUpdate('')
+            setIsOpenFormDelete(!isOpenFormDelete)
+            handleFetchModlues()
+        } catch (error) {
+            console.error({ error })
+            Toast.fire({
+                icon: 'error',
+                title: `Gagal menghapus module, terdapat gangguan server!`,
+            });
+        }
+    }
+
+
     const [showFormModule, setShowFormModule] = React.useState(false)
     const [showFormVideo, setShowFormVideo] = React.useState(false)
 
@@ -273,7 +341,78 @@ function ModuleSection() {
 
     return (
         <section className="w-full h-fit px-3 md:px-64 pb-10 py-14 bg-white z-50 flex items-center justify-start flex-col text-left gap-1">
+            <AlertDialog open={isOpenFormDelete}>
 
+                <AlertDialogContent className='w-5/6 rounded-xl py-10'>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Anda yakin ingin menghapus module ini?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Jika anda menghapus modul ini akan berlaku secara permanen selain itu video pembelajaran yang telah diupload juga akan terhapus!
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={(e) => setIsOpenFormDelete(!isOpenFormDelete)}>Batal</AlertDialogCancel>
+
+                        <Button onClick={(e) => handleDeleteModule(e)} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Delete</Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={isOpenFormUpdate}>
+                <AlertDialogContent className='w-5/6 rounded-xl py-10'>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Update Module Pembelajaran mu!</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Ubah module video pembelajaran Robo Edu-mu dengan mudah sekarang juga!
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <form className="flex flex-col gap-2 mt-0 w-full">
+
+                        {
+                            isUploading ? <div className="px-5 flex w-full items-center justify-center mt-10">
+                                <div className="w-full flex flex-col gap-2 py-5 -mt-10 items-center justify-center">
+                                    <HashLoader color="#FF8E06" size={32} />
+                                </div>
+                            </div> : <>
+                                <div className="flex flex-col w-full">
+                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                        Nama
+                                    </p>
+                                    <Input value={nameModule} onChange={(e) => setNameModule(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder='Ubah Judul Modulmu' />
+                                </div>
+                                <div className="flex flex-col w-full">
+                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                        Kategori Modul
+                                    </p>
+                                    <Select value={categoryModule} onValueChange={(value) => setCategoryModule(value)}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Pilih Kategori" />
+                                        </SelectTrigger>
+                                        <SelectContent side="top">
+                                            <SelectGroup>
+                                                <SelectLabel>Kategori Modul Pembelajaran</SelectLabel>
+                                                {
+                                                    categories.map((category, index) => (
+                                                        <SelectItem key={index} value={category.id}>{category.name}</SelectItem>
+                                                    ))
+                                                }
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </>
+                        }
+
+
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={(e) => setIsOpenFormUpdate(!isOpenFormUpdate)}>Batal</AlertDialogCancel>
+
+                            <Button onClick={(e) => handleUpdateModule(e)} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Update</Button>
+                        </AlertDialogFooter>
+                    </form>
+                </AlertDialogContent>
+            </AlertDialog>
             <AlertDialog open={showFormVideo}>
                 <AlertDialogContent className='w-5/6 rounded-xl py-10'>
                     <AlertDialogHeader>
@@ -405,9 +544,21 @@ function ModuleSection() {
                                             <p className='font-medium '>
                                                 {module.name}
                                             </p>
-                                            <p className="text-sm font-normal text-gray-700 !no-underline">
-                                                {module.category.name}
-                                            </p>
+                                            <div className="w-fit flex gap-2">
+                                                <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                    {module.category.name}
+                                                </p>
+                                                <p onClick={(e) => { setIsOpenFormUpdate(!isOpenFormUpdate); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-secondColor udernline">
+                                                    <MdEditNote />
+                                                    <span>Edit Modul</span>
+                                                </p>
+                                                <p onClick={(e) => { setIsOpenFormDelete(!isOpenFormDelete); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-red-500 udernline">
+                                                    <MdOutlineDelete />
+
+                                                    <span>Hapus Modul</span>
+                                                </p>
+                                            </div>
+
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent>
