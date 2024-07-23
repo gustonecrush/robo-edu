@@ -57,6 +57,8 @@ export default function Navbar() {
                 }
             })
             setUserDetail(response.data.user)
+            Cookies.set('Role', response.data.user.role)
+            Cookies.set('RoleUser', response.data.user.role)
             console.log({ response })
         } catch (error) {
             console.error({ error })

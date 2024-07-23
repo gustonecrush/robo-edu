@@ -48,8 +48,6 @@ export default function Home() {
           title: `Berhasil login, silahkan menggunakan Robo Edu!`,
         });
         Cookies.set('Token', response.data.authorization.token)
-        Cookies.set('Role', response.data.authorization.role)
-        Cookies.set('RoleUser', response.data.authorization.role)
         Cookies.set('IDUser', response.data.authorization.id)
         router.push(`/home`)
         console.log({ response })
