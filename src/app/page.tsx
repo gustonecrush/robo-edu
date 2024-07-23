@@ -49,6 +49,7 @@ export default function Home() {
         });
         Cookies.set('Token', response.data.authorization.token)
         Cookies.set('Role', response.data.authorization.role)
+        Cookies.set('RoleUser', response.data.authorization.role)
         Cookies.set('IDUser', response.data.authorization.id)
         router.push(`/home`)
         console.log({ response })
@@ -104,7 +105,6 @@ export default function Home() {
         });
         setIsAlreadyHaveAccount(true)
         setIsAlreadyHaveRegistered(true)
-        Cookies.set('RoleUser', role)
         console.log({ response })
       } catch (error) {
         console.error({ error })
