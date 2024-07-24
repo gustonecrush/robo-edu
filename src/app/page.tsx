@@ -115,7 +115,7 @@ export default function Home() {
         <p className='text-gray-700 text-sm md:text-xl'>
           Daftarkan dirimu dan akses seluruh course yang ada!
         </p>
-        <form onSubmit={(e) => handleRegisterUser(e)} className="flex flex-col gap-2 mt-6 w-full px-5">
+        <form className="flex flex-col gap-2 mt-6 w-full px-5">
           <Input value={name} onChange={(e) => setName(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Namamu" />
           <Input value={email} onChange={(e) => setEmail(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Email" />
           <Input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder="Masukkan Username" />
@@ -133,7 +133,7 @@ export default function Home() {
             </SelectContent>
           </Select>
           <Slide direction="up">
-            <Button className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Daftar</Button>
+            <Button onClick={(e) => { alert('REGIS'); handleRegisterUser(e) }} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Daftar</Button>
           </Slide>
           <Slide direction="up">
             <Button type="button" onClick={(e) => setIsAlreadyHaveAccount(true)} className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Sudah Punya Akun</Button>
