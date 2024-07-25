@@ -133,7 +133,7 @@ export default function Home() {
             </SelectContent>
           </Select>
           <Slide direction="up">
-            <Button onClick={(e) => { alert('REGIS'); handleRegisterUser(e) }} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Daftar</Button>
+            <Button onClick={(e) => {handleRegisterUser(e) }} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Daftar</Button>
           </Slide>
           <Slide direction="up">
             <Button type="button" onClick={(e) => setIsAlreadyHaveAccount(true)} className="w-full bg-primeColor hover:bg-primeColor active:ring-primeColor text-white">Sudah Punya Akun</Button>
