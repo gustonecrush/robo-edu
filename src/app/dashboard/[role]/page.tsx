@@ -161,6 +161,11 @@ function ModuleSection() {
         handleFetchVideos(id)
     }
 
+    const [fileModul, setFileModul] = React.useState<File | null>(null)
+    const handleFileModulChange = (e: any) => {
+        setFileModul(e.target.files[0])
+    }
+
     const handleUploadModul = async (e: any) => {
         e.preventDefault()
 
@@ -168,12 +173,17 @@ function ModuleSection() {
         const modulData = new FormData()
         modulData.append('name', modul)
         modulData.append('category', category)
+        modulData.append('file', category)
         modulData.append('contributor', idUser?.toString() || '')
+        if (fileModul != null) {
+            modulData.append('file', fileModul)
+        }
 
         try {
             const response = await axios.post(baseUrl, modulData, {
                 headers: {
-                    Authorization: `Bearer ${Cookies.get('Token')}`
+                    Authorization: `Bearer ${Cookies.get('Token')}`,
+                    'Content-Type': 'multipart/form-data'
                 }
             })
             Toast.fire({
@@ -520,6 +530,12 @@ function ModuleSection() {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
+                            </div>
+                            <div className="flex flex-col w-full">
+                                <p className="text-sm font-normal text-gray-700 !no-underline">
+                                    File Modul
+                                </p>
+                                <Input type='file' className="w-full active:ring-secondColor focus:ring-secondColor" onChange={handleFileModulChange} placeholder="Masukkan nama modul" />
                             </div>
                             <AlertDialogFooter>
                                 <AlertDialogCancel onClick={(e) => setShowFormModule(!showFormModule)} >Batal</AlertDialogCancel>
