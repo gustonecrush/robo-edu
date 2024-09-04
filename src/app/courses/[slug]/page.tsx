@@ -9,12 +9,13 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { Course } from "@/types/course";
 import { CountingCourse, ReadingCourse, WritingCourse } from "@/dummies";
-import { FaPlay } from "react-icons/fa";
+import { FaPlay, FaRegFile } from "react-icons/fa";
 import { formatTime } from "@/utils/time";
 import axios from "axios";
 import { Module, Video } from "@/types/robo-edu";
 import { extractUUID } from "@/utils/uuid";
 import { HashLoader } from 'react-spinners';
+import Link from "next/link";
 
 export default function Courses() {
     const path = usePathname()
@@ -141,6 +142,10 @@ function CourseSection({ course, videos, modules, isLoadingVideos }: { course: C
                                 alt="Ikon Durasi"
                             />
                             <p className="text-xs">by {item?.contributor.username}</p>
+                            <Link target='_blank' href={process.env.NEXT_PUBLIC_BASE_URL + '/storage/modules/' + item?.file} className="text-sm flex gap-1 items-center font-normal text-gray-600 udernline">
+                                <FaRegFile />
+                                <span>File Modul Pembelajaran</span>
+                            </Link>
                         </div>
                     </div>
                 ))

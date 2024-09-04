@@ -38,6 +38,8 @@ import { BsTrash2Fill } from 'react-icons/bs'
 import { MdEdit, MdEditNote, MdOutlineDelete } from 'react-icons/md'
 import { Textarea } from '@/components/ui/textarea'
 import Image from 'next/image'
+import Link from 'next/link'
+import { FaRegFile } from 'react-icons/fa'
 
 function Page() {
     const pathname = usePathname()
@@ -89,6 +91,7 @@ type Module = {
     contributor: Contributor;
     created_at: string;
     updated_at: string;
+    file: string;
 }
 
 type Video = {
@@ -168,6 +171,7 @@ function ModuleSection() {
 
     const handleUploadModul = async (e: any) => {
         e.preventDefault()
+        setIsUploading(!isUploading)
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/api/v1/create-module';
         const modulData = new FormData()
@@ -196,8 +200,14 @@ function ModuleSection() {
             handleFetchModlues()
             handleFetchCategories()
             setShowFormModule(false)
+            setIsUploading(!isUploading)
         } catch (error) {
             console.error({ error })
+            Toast.fire({
+                icon: 'error',
+                title: `Gagal mengupload module, file terlalu besar!`,
+            });
+            setIsUploading(!isUploading)
         }
     }
 
@@ -539,7 +549,7 @@ function ModuleSection() {
                             </div>
                             <AlertDialogFooter>
                                 <AlertDialogCancel onClick={(e) => setShowFormModule(!showFormModule)} >Batal</AlertDialogCancel>
-                                <Button onClick={(e) => handleUploadModul(e)} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Upload</Button>
+                                <Button onClick={(e) => handleUploadModul(e)} className="w-full bg-secondColor hover:bg-secondColor flex items-center justify-center active:ring-secondColor text-white">{isUploading ? <HashLoader color='#fff' size='13' /> : <span>Upload</span>}</Button>
                             </AlertDialogFooter>
                         </form>
                     </AlertDialogContent>
@@ -560,20 +570,28 @@ function ModuleSection() {
                                             <p className='font-medium '>
                                                 {module.name}
                                             </p>
-                                            <div className="w-fit flex gap-2">
-                                                <p className="text-sm font-normal text-gray-700 !no-underline">
-                                                    {module.category.name}
-                                                </p>
-                                                <p onClick={(e) => { setIsOpenFormUpdate(!isOpenFormUpdate); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-secondColor udernline">
-                                                    <MdEditNote />
-                                                    <span>Edit Modul</span>
-                                                </p>
-                                                <p onClick={(e) => { setIsOpenFormDelete(!isOpenFormDelete); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-red-500 udernline">
-                                                    <MdOutlineDelete />
+                                            <div className="flex flex-col gap-1">
+                                                <div className="w-fit flex gap-2">
+                                                    <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                        {module.category.name}
+                                                    </p>
 
-                                                    <span>Hapus Modul</span>
-                                                </p>
+                                                    <p onClick={(e) => { setIsOpenFormUpdate(!isOpenFormUpdate); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-secondColor udernline">
+                                                        <MdEditNote />
+                                                        <span>Edit Modul</span>
+                                                    </p>
+                                                    <p onClick={(e) => { setIsOpenFormDelete(!isOpenFormDelete); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-red-500 udernline">
+                                                        <MdOutlineDelete />
+
+                                                        <span>Hapus Modul</span>
+                                                    </p>
+                                                </div>
+                                                <Link target='_blank' href={process.env.NEXT_PUBLIC_BASE_URL + '/storage/modules/' + module.file} className="text-sm flex gap-1 items-center font-normal text-gray-600 udernline">
+                                                    <FaRegFile />
+                                                    <span>File Modul Pembelajaran</span>
+                                                </Link>
                                             </div>
+
 
                                         </div>
                                     </AccordionTrigger>
