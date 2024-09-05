@@ -213,7 +213,7 @@ function ModuleSection() {
             setFileModul(null)
             setShowFormModule(false)
 
-            setIsUploading(!isUploading)
+            setIsUploading(false)
         }
     }
 
