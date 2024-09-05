@@ -201,7 +201,7 @@ function ModuleSection() {
             handleFetchModlues()
             handleFetchCategories()
             setShowFormModule(false)
-            setIsUploading(!isUploading)
+            setIsUploading(false)
         } catch (error) {
             console.error({ error })
             Toast.fire({
