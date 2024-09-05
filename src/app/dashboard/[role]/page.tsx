@@ -573,7 +573,7 @@ function ModuleSection() {
                                             <div className="flex flex-col gap-1">
                                                 <div className="w-fit flex gap-2">
                                                     <p className="text-sm font-normal text-gray-700 !no-underline">
-                                                        {module.category.name}
+                                                        {module.category != null ? module.category.name : ''}
                                                     </p>
 
                                                     <p onClick={(e) => { setIsOpenFormUpdate(!isOpenFormUpdate); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-secondColor udernline">
