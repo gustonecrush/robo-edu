@@ -197,6 +197,7 @@ function ModuleSection() {
             console.log({ response })
             setModul('')
             setCategory('')
+            setFileModul(null)
             handleFetchModlues()
             handleFetchCategories()
             setShowFormModule(false)
@@ -205,8 +206,13 @@ function ModuleSection() {
             console.error({ error })
             Toast.fire({
                 icon: 'error',
-                title: `Gagal mengupload module, file terlalu besar!`,
+                title: `Gagal mengupload module!`,
             });
+            setModul('')
+            setCategory('')
+            setFileModul(null)
+            setShowFormModule(false)
+
             setIsUploading(!isUploading)
         }
     }
@@ -548,7 +554,9 @@ function ModuleSection() {
                                 <Input type='file' className="w-full active:ring-secondColor focus:ring-secondColor" onChange={handleFileModulChange} placeholder="Masukkan nama modul" />
                             </div>
                             <AlertDialogFooter>
-                                <AlertDialogCancel onClick={(e) => setShowFormModule(!showFormModule)} >Batal</AlertDialogCancel>
+                                {
+                                    !isUploading && <AlertDialogCancel onClick={(e) => setShowFormModule(!showFormModule)} >Batal</AlertDialogCancel>
+                                }
                                 <Button onClick={(e) => handleUploadModul(e)} className="w-full bg-secondColor hover:bg-secondColor flex items-center justify-center active:ring-secondColor text-white">{isUploading ? <HashLoader color='#fff' size='13' /> : <span>Upload</span>}</Button>
                             </AlertDialogFooter>
                         </form>
