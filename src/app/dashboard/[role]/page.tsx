@@ -584,10 +584,7 @@ function ModuleSection() {
                                                         {module.category != null ? module.category.name : ''}
                                                     </p>
 
-                                                    <p onClick={(e) => { setIsOpenFormUpdate(!isOpenFormUpdate); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-secondColor udernline">
-                                                        <MdEditNote />
-                                                        <span>Edit Modul</span>
-                                                    </p>
+
                                                     <p onClick={(e) => { setIsOpenFormDelete(!isOpenFormDelete); setIdModuleUpdate(module.id) }} className="text-sm flex gap-1 items-center font-normal text-red-500 udernline">
                                                         <MdOutlineDelete />
 
@@ -642,7 +639,7 @@ function ModuleSection() {
 
                                                     <div className="flex w-fit gap-1 absolute right-2 bottom-2">
                                                         <div className="w-fit flex gap-1 text-white ">
-                                                            <div onClick={(e) => handleDeleteVideo(e, video.id)} className="w-fit p-2 bg-secondColor hover:text-secondColor hover:bg-primeColor rounded-full flex items-center justify-center">
+                                                            <div onClick={(e) => setIsOpenFormUpdate(!isOpenFormUpdate)} className="w-fit p-2 bg-secondColor hover:text-secondColor hover:bg-primeColor rounded-full flex items-center justify-center">
                                                                 <MdEdit />
                                                             </div>
                                                             <AlertDialog>
