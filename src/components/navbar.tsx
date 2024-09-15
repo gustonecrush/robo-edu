@@ -170,7 +170,89 @@ export default function Navbar() {
                         />
                     </Link>
 
-                    <div className="flex items-center justify-center w-fit h-fit">
+                    <section className="w-fit bg-primeColor  hidden lg:flex items-center justify-center text-secondColor z-50 right-10  rounded-lg">
+                        <ul className="flex flex-row">
+                            <li>
+                                <Link href='/home' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><GoHomeFill />Home</Link>
+                            </li>
+                            {
+                                roleUser == 'contributor' && tokenUser && <li><Link href='/dashboard/contributor' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Contributor</Link></li>}{roleUser != 'contributor' && tokenUser && <li><Link href='/courses' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoLaptopSharp />Courses</Link></li>
+                            }
+
+                            <li><Link href='/about-us' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoInformationCircle />About Us</Link></li>
+                            <li><div onClick={(e) => { setShowContactUs(!showContactUs); setShowMenu(!showMenu) }} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdContact />Contact Us</div></li>
+                            {
+                                tokenUser && <>    <li>  <AlertDialog open={isOpenFormUpdate}>
+                                    <AlertDialogTrigger>
+                                        <div onClick={(e) => setIsOpenFormUpdate(!isOpenFormUpdate)} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><PiGearFill />Edit Profile</div>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className='w-5/6 rounded-xl py-10'>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Update Profile Robo Edu-mu!</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Ubah detail user profile Robo Edu-mu dengan mudah sekarang juga!
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+
+                                        <form className="flex flex-col gap-2 mt-0 w-full">
+
+                                            {
+                                                isUploading ? <div className="px-5 flex w-full items-center justify-center mt-10">
+                                                    <div className="w-full flex flex-col gap-2 py-5 -mt-10 items-center justify-center">
+                                                        <HashLoader color="#FF8E06" size={32} />
+                                                    </div>
+                                                </div> : <>
+                                                    <div className="flex flex-col w-full">
+                                                        <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                            Nama
+                                                        </p>
+                                                        <Input value={name} onChange={(e) => setName(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder={userDetail?.name} />
+                                                    </div>
+                                                    <div className="flex flex-col w-full">
+                                                        <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                            Email
+                                                        </p>
+                                                        <Input value={email} onChange={(e) => setEmail(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder={userDetail?.email} />
+                                                    </div>
+                                                    <div className="flex flex-col w-full">
+                                                        <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                            Username
+                                                        </p>
+                                                        <Input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" placeholder={userDetail?.username} />
+                                                    </div>
+                                                    <div className="flex flex-col w-full">
+                                                        <p className="text-sm font-normal text-gray-700 !no-underline">
+                                                            Password
+                                                        </p>
+                                                        <div className="flex w-full gap-1">
+                                                            <Input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full active:ring-secondColor focus:ring-secondColor" type="password" placeholder="XXXXXXXXX" readOnly={!isUpdatePassword} disabled={!isUpdatePassword} />
+                                                            {
+                                                                !isUpdatePassword && <Button onClick={(e) => setIsUpdatePassword(!isUpdatePassword)} className="w-fit bg-primeColor hover:bg-primeColor active:ring-secondColor text-white">Update Password</Button>
+                                                            }
+
+                                                        </div>
+
+
+                                                    </div>
+                                                </>
+                                            }
+
+
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel onClick={(e) => setIsOpenFormUpdate(!isOpenFormUpdate)}>Batal</AlertDialogCancel>
+
+                                                <Button onClick={(e) => handleUpdateProfile(e)} className="w-full bg-secondColor hover:bg-secondColor active:ring-secondColor text-white">Update</Button>
+                                            </AlertDialogFooter>
+                                        </form>
+                                    </AlertDialogContent>
+                                </AlertDialog></li>
+                                    <li><div onClick={(e) => handleLogoutUser(e)} className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><IoMdLogOut />Logout</div></li></>
+                            }
+
+                        </ul>
+                    </section>
+
+                    <div className="flex lg:hidden items-center justify-center w-fit h-fit">
                         {
                             showMenu ? <MdOutlineClose onClick={(e) => setShowMenu(!showMenu)} className="text-2xl text-secondColor hover:cursor-pointer" /> : <GiHamburgerMenu onClick={(e) => setShowMenu(!showMenu)} className="text-2xl text-secondColor hover:cursor-pointer" />
                         }
@@ -180,7 +262,7 @@ export default function Navbar() {
             </header>
             {
                 showMenu &&
-                <section className="w-fit bg-primeColor flex items-center justify-center text-secondColor z-50 absolute top-20 right-0 border border-gray-200 rounded-lg">
+                <section className="w-fit bg-primeColor  flex lg:hidden items-center justify-center text-secondColor z-50 absolute top-20 right-0 border border-gray-200 rounded-lg">
                     <ul>
                         <li>
                             <Link href='/home' className='gap-3 flex items-center !text-left justify-between px-5 py-3 hover:scale-110 hover:cursor-pointer duration-1000'><GoHomeFill />Home</Link>
@@ -262,6 +344,8 @@ export default function Navbar() {
                     </ul>
                 </section>
             }
+
+
             {
                 showContactUs && <section className="w-full bg-primeColor flex flex-col gap-5 items-start justify-center text-secondColor z-50 absolute top-20 right-0 border border-gray-200 rounded-lg px-5 py-4">
                     <div className="flex justify-between items-center w-full">
