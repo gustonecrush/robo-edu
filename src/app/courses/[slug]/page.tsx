@@ -104,7 +104,7 @@ function CourseSection({ course, videos, modules, isLoadingVideos }: { course: C
             </h1>
 
             {
-                selectedVideoFile ? <video width="320" height="240" controls preload="none" className='rounded-xl'>
+                selectedVideoFile ? <video width="320" height="240" controls preload="none" className='rounded-xl' poster={`/dummies/dummy${(selectedVideo % 7) + 1}.png`}>
                     <source src={process.env.NEXT_PUBLIC_BASE_URL + '/storage/' + selectedVideoFile?.file} type="video/mp4" />
                 </video> : <Image
                     src={`/dummies/${course.video_course[selectedVideo]?.cover_video}`}
@@ -131,22 +131,23 @@ function CourseSection({ course, videos, modules, isLoadingVideos }: { course: C
         <div className="flex w-full flex-col gap-3 px-5 py-4 border-2 rounded-lg border-gray-200">
             {
                 modules.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center w-full">
+                    <div key={index} className="flex flex-col justify-between items-start w-full">
                         <p className="font-bold text-sm">{item.name}</p>
                         <div className="flex gap-1">
                             <Image
                                 src='/icons/durasi.png'
                                 width={0}
                                 height={0}
-                                className='w-4'
+                                className='w-5'
                                 alt="Ikon Durasi"
                             />
-                            <p className="text-xs">by {item?.contributor.username}</p>
-                            <Link target='_blank' href={process.env.NEXT_PUBLIC_BASE_URL + '/storage/modules/' + item?.file} className="text-sm flex gap-1 items-center font-normal text-gray-600 udernline">
-                                <FaRegFile />
-                                <span>File Modul Pembelajaran</span>
-                            </Link>
+                            <p className="text-sm">by {item?.contributor.username}</p>
+
                         </div>
+                        <Link target='_blank' href={process.env.NEXT_PUBLIC_BASE_URL + '/storage/modules/' + item?.file} className="text-sm flex gap-1 items-center font-normal text-gray-600 udernline ml-1">
+                            <FaRegFile />
+                            <span>File Modul Pembelajaran</span>
+                        </Link>
                     </div>
                 ))
             }
@@ -186,11 +187,9 @@ function CourseSection({ course, videos, modules, isLoadingVideos }: { course: C
                 videos?.map((video, index) => (
                     <div key={index} className="w-full py-3 px-5 flex-row flex gap-2 border border-black hover:cursor-pointer group" onClick={(e) => { setSelectedVideo(index); scrollToTop(); setSelectedVideoFile(video) }}>
                         <div className="!w-[150px] flex items-center justify-center overflow-clip relative">
-                            <video width="320" height="240" controls preload="none" className='rounded-xl' poster="/dummies/dummy1.png">
-                                <source src={process.env.NEXT_PUBLIC_BASE_URL + '/storage/' + video?.file} type="video/mp4" />
-                            </video>
+                            <VideoThumbnail video={video} index={index} videos={videos} />
                         </div>
-                        <div className="flex flex-col justify-between text-sm ">
+                        <div className="flex flex-col justify-center text-sm ">
                             <p className="group-hover:text-secondColor duration-1000">{video.name}</p>
                             <p>{video.duration}</p>
                         </div>
@@ -201,3 +200,26 @@ function CourseSection({ course, videos, modules, isLoadingVideos }: { course: C
 
     </section>
 }
+
+const VideoThumbnail = ({ video, index, videos }: { video: Video, index: number, videos: Video[] }) => {
+    // Calculate the poster index using modulo to reset after 7
+    const posterIndex = (index % 7) + 1;
+
+    return (
+        <video
+            width="320"
+            muted
+            height="240"
+            preload="none"
+            className="rounded-xl"
+            poster={`/dummies/dummy${posterIndex}.png`}
+        >
+            <source
+                src={process.env.NEXT_PUBLIC_BASE_URL + '/storage/' + video?.file}
+                type="video/mp4"
+            />
+            Your browser does not support the video tag.
+        </video>
+    );
+};
+

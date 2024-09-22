@@ -164,7 +164,7 @@ function CourseSection() {
                                             {module.name}
                                         </p>
                                         <p className="text-sm font-normal text-gray-700 !no-underline">
-                                            {module.category.name}
+                                            {module.category != null ? module.category.name : '-'}
                                         </p>
                                     </Link>
                                 </AccordionTrigger>
